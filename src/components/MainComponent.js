@@ -9,7 +9,7 @@ import { LEADERS } from '../shared/leaders';
 import React, {Component} from 'react';
 import Header from './HeaderComponent';
 import Footer from './FooterComponent';
-import {Routes, Route, Navigate} from 'react-router-dom';
+import {Routes, Route, Navigate, useParams} from 'react-router-dom';
 
 class Main extends Component {
 
@@ -21,13 +21,8 @@ class Main extends Component {
       comments: COMMENTS,
       promotions: PROMOTIONS,
       leaders: LEADERS,
-      selectedDishId: null
     }
   }
-
-    // onDishSelect(dishId) {
-    //     this.setState({selectedDishId: dishId});
-    // }
 
   render() {
     const HomePage = () => {
@@ -39,19 +34,25 @@ class Main extends Component {
             />
         )
     }
+
+    const DishWithId = () => {
+        const {dishId} = useParams();
+        return(
+            <DishDetail dish={this.state.dishes.find((dish) => dish.id === parseInt(dishId, 10))}
+            comments={this.state.comments.filter((comment) => comment.dishId === parseInt(dishId, 10))} />
+        );
+      };
+
     return (
     <div>
         <Header/>
             <Routes>
                 <Route path="/home" element={<HomePage/>} />
                 <Route exact path="/menu" element={<Menu dishes={this.state.dishes}/>}/>
+                <Route path='/menu/:dishId' element={<DishWithId/>}/>
                 <Route path="/" element={<Navigate to="/home"/>}/>
                 <Route exact path='/contactus' element={<Contact />} />
             </Routes>
-        {/* <Menu dishes={this.state.dishes}
-            onClick={(dish) => this.onDishSelect(dish)}
-        /> */}
-        {/* <DishDetail dish={this.state.dishes.filter((dish) => dish.id === this.state.selectedDishId)[0]}/> */}
         <Footer/>
     </div>
     );
